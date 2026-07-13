@@ -95,13 +95,20 @@ async function sendDiscordNotification(payload: NotificationPayload): Promise<vo
   // CI Jobs status
   if (payload.jobs.length > 0) {
     const total = payload.jobs.length;
-    const passed = payload.jobs.filter(j => j.status === 'success').length;
-    const failed = payload.jobs.filter(j => j.status === 'failure').length;
-    const skipped = payload.jobs.filter(j => j.status === 'skipped').length;
+    const passed = payload.jobs.filter((j) => j.status === 'success').length;
+    const failed = payload.jobs.filter((j) => j.status === 'failure').length;
+    const skipped = payload.jobs.filter((j) => j.status === 'skipped').length;
 
     const statusIcon = failed > 0 ? '❌' : '✅';
-    const jobLines = payload.jobs.map(j => {
-      const icon = j.status === 'success' ? '✅' : j.status === 'failure' ? '❌' : j.status === 'cancelled' ? '🚫' : '⏭️';
+    const jobLines = payload.jobs.map((j) => {
+      const icon =
+        j.status === 'success'
+          ? '✅'
+          : j.status === 'failure'
+            ? '❌'
+            : j.status === 'cancelled'
+              ? '🚫'
+              : '⏭️';
       const dur = j.duration ? ` (${j.duration})` : '';
       return `${icon} **${j.name}**${dur}`;
     });
@@ -116,7 +123,9 @@ async function sendDiscordNotification(payload: NotificationPayload): Promise<vo
   if (payload.features.length > 0) {
     fields.push({
       name: '✨ New Features',
-      value: payload.features.map(f => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`).join('\n'),
+      value: payload.features
+        .map((f) => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`)
+        .join('\n'),
     });
   }
 
@@ -124,7 +133,9 @@ async function sendDiscordNotification(payload: NotificationPayload): Promise<vo
   if (payload.improvements.length > 0) {
     fields.push({
       name: '🔧 Improvements',
-      value: payload.improvements.map(f => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`).join('\n'),
+      value: payload.improvements
+        .map((f) => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`)
+        .join('\n'),
     });
   }
 
@@ -132,11 +143,13 @@ async function sendDiscordNotification(payload: NotificationPayload): Promise<vo
   if (payload.fixes.length > 0) {
     fields.push({
       name: '🐛 Bug Fixes',
-      value: payload.fixes.map(f => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`).join('\n'),
+      value: payload.fixes
+        .map((f) => `• **${escapeMarkdown(f.name)}** — ${escapeMarkdown(f.description)}`)
+        .join('\n'),
     });
   }
 
-  const color = payload.jobs.some(j => j.status === 'failure') ? 0xef4444 : 0x22c55e;
+  const color = payload.jobs.some((j) => j.status === 'failure') ? 0xef4444 : 0x22c55e;
 
   const embed = {
     title: `🚀 Kuberna Labs — ${payload.title}`,
@@ -218,15 +231,19 @@ function printNotification(payload: NotificationPayload): void {
   console.log(`Environment: ${payload.environment}`);
   console.log(`Commit: ${payload.commit.shortSha} by ${payload.commit.author}`);
   console.log(`Branch: ${payload.branch}`);
-  console.log(`Changes: ${payload.filesChanged} files (++${payload.insertions}/--${payload.deletions})`);
+  console.log(
+    `Changes: ${payload.filesChanged} files (++${payload.insertions}/--${payload.deletions})`
+  );
   console.log(`Duration: ${payload.duration || 'N/A'}`);
   console.log(`Date: ${new Date().toISOString()}`);
 
   if (payload.jobs.length > 0) {
-    const passed = payload.jobs.filter(j => j.status === 'success').length;
-    const failed = payload.jobs.filter(j => j.status === 'failure').length;
-    console.log(`\nCI Pipeline: ${passed}/${payload.jobs.length} passed${failed > 0 ? `, ${failed} failed` : ''}`);
-    payload.jobs.forEach(j => {
+    const passed = payload.jobs.filter((j) => j.status === 'success').length;
+    const failed = payload.jobs.filter((j) => j.status === 'failure').length;
+    console.log(
+      `\nCI Pipeline: ${passed}/${payload.jobs.length} passed${failed > 0 ? `, ${failed} failed` : ''}`
+    );
+    payload.jobs.forEach((j) => {
       const icon = j.status === 'success' ? '✅' : j.status === 'failure' ? '❌' : '⏭️';
       console.log(`  ${icon} ${j.name}${j.duration ? ` (${j.duration})` : ''}`);
     });
@@ -234,15 +251,15 @@ function printNotification(payload: NotificationPayload): void {
 
   if (payload.features.length > 0) {
     console.log('\nNew Features:');
-    payload.features.forEach(f => console.log(`  ✅ ${f.name} — ${f.description}`));
+    payload.features.forEach((f) => console.log(`  ✅ ${f.name} — ${f.description}`));
   }
   if (payload.improvements.length > 0) {
     console.log('\nImprovements:');
-    payload.improvements.forEach(f => console.log(`  🔧 ${f.name} — ${f.description}`));
+    payload.improvements.forEach((f) => console.log(`  🔧 ${f.name} — ${f.description}`));
   }
   if (payload.fixes.length > 0) {
     console.log('\nBug Fixes:');
-    payload.fixes.forEach(f => console.log(`  🐛 ${f.name} — ${f.description}`));
+    payload.fixes.forEach((f) => console.log(`  🐛 ${f.name} — ${f.description}`));
   }
   console.log('===============================\n');
 }
@@ -276,7 +293,7 @@ if (require.main === module) {
     duration: process.env.NOTIFY_DURATION,
   };
 
-  sendDiscordNotification(payload).catch(err => {
+  sendDiscordNotification(payload).catch((err) => {
     console.error('Failed to send notification:', err);
     process.exit(1);
   });
