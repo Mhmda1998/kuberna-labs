@@ -6,6 +6,10 @@ Thank you for considering contributing. This document outlines the development w
 
 - [Code of Conduct](#code-of-conduct)
 - [Development Setup](#development-setup)
+- [Run the Project](#run-the-project)
+- [Troubleshooting](#troubleshooting)
+- [Reference Documentation](#reference-documentation)
+- [Branch Naming](#branch-naming)
 - [Code Style](#code-style)
 - [Commit Messages](#commit-messages)
 - [Pull Request Process](#pull-request-process)
@@ -22,8 +26,9 @@ This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By partic
 
 - Node.js >= 18.0.0
 - npm >= 9.0.0
-- PostgreSQL 14+ (or Supabase account for managed DB)
 - Git
+- Docker with Docker Compose (recommended for PostgreSQL, Redis, and NATS)
+- PostgreSQL 14+ if you do not use Docker
 - WalletConnect Project ID (free at https://cloud.walletconnect.com)
 
 ### Setup Steps
@@ -33,27 +38,158 @@ This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By partic
 git clone https://github.com/YOUR_USERNAME/kuberna-labs.git
 cd kuberna-labs
 
-# 2. Install all dependencies
-npm install
-cd backend && npm install && cd ..
-cd frontend && npm install && cd ..
-cd sdk && npm install && cd ..
+# 2. Install root and workspace dependencies from the lockfile
+npm ci
 
-# 3. Configure environment
+# 3. Start local infrastructure
+docker compose up -d postgres redis nats
+docker compose ps
+
+# 4. Configure backend and frontend environments
 cp backend/.env.example backend/.env
-# Edit backend/.env: set DATABASE_URL, DIRECT_URL, JWT_SECRET
+cp frontend/.env.example frontend/.env.local
 
-# 4. Set up database
-cd backend && npx prisma migrate dev && cd ..
+# 5. Generate the Prisma client
+npm --prefix backend run db:generate
 
-# 5. Compile contracts (optional, for contract work)
-npm run compile
+# 6. Create the local database schema
+npm --prefix backend run db:push
 
-# 6. Verify setup
-cd backend && npm test && cd ..
+# 7. Verify all four test suites
+npm test
 ```
 
-### Branch Naming
+The root `npm ci` command installs the `backend`, `frontend`, and `sdk` workspaces. You do
+not need to run a separate install in each directory.
+
+### Environment Configuration
+
+For the Docker services above, set these values in `backend/.env`:
+
+```dotenv
+DATABASE_URL=postgresql://kuberna:kuberna_dev_password@localhost:5432/kuberna
+DIRECT_URL=postgresql://kuberna:kuberna_dev_password@localhost:5432/kuberna
+REDIS_URL=redis://localhost:6379
+NATS_URL=nats://localhost:4222
+JWT_SECRET=replace-with-a-local-secret-at-least-16-characters
+```
+
+Generate a local JWT secret with `openssl rand -hex 32`. Do not commit either environment
+file. External API, wallet, and RPC credentials are optional unless the feature you are
+working on requires them.
+
+The frontend defaults to the backend at `http://localhost:3000`. Add a real
+`NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` to `frontend/.env.local` only when testing wallet
+connections.
+
+### Database Changes
+
+Use `db:push` to create a disposable local database from the current Prisma schema. If your
+contribution changes `backend/prisma/schema.prisma`, create and review a migration instead:
+
+```bash
+npm --prefix backend run db:migrate -- --name short_description
+npm --prefix backend run db:generate
+```
+
+Commit the generated migration together with the schema change. See
+[`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) for a managed PostgreSQL setup.
+
+### Local Smart Contract Deployment
+
+Start the local Hardhat network in one terminal:
+
+```bash
+npm run node
+```
+
+Deploy the contracts from a second terminal:
+
+```bash
+npm run deploy:local
+```
+
+The deployment writes local addresses under `deployments/`. Hardhat's displayed accounts
+are public development accounts; never fund or reuse them on a live network.
+
+## Run the Project
+
+With the Docker services running and the environment files configured, start the backend:
+
+```bash
+npm --prefix backend run dev
+```
+
+Start the frontend in another terminal:
+
+```bash
+npm run dev
+```
+
+Run the full repository verification from the root:
+
+```bash
+npm test
+npm run lint
+npm run format:check
+```
+
+The root test command runs backend Jest, SDK Jest, Hardhat contract, and frontend Jest suites.
+Use `npm run test:backend`, `npm run test:sdk`, `npm run test:contracts`, or
+`npm run test:frontend` while iterating on one workspace.
+
+Stop the local infrastructure when you finish:
+
+```bash
+docker compose down
+```
+
+## Troubleshooting
+
+### Prisma reports that `DIRECT_URL` is missing
+
+Both `DATABASE_URL` and `DIRECT_URL` are required by `backend/prisma/schema.prisma`. For local
+PostgreSQL they can use the same connection string. Hosted poolers usually require a separate
+direct connection; see [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md).
+
+### A local port is already in use
+
+The default services use PostgreSQL `5432`, Redis `6379`, NATS `4222`, the backend `3000`,
+and Hardhat `8545`. Stop the conflicting process or change the corresponding local port before
+starting the stack.
+
+### A Docker service is not healthy
+
+```bash
+docker compose ps
+docker compose logs postgres redis nats
+```
+
+Wait for PostgreSQL, Redis, and NATS to report healthy before starting the backend.
+
+### Dependencies or generated Prisma types are stale
+
+```bash
+npm ci
+npm --prefix backend run db:generate
+```
+
+### A test needs an external service
+
+Unit tests should mock external RPC, payment, email, and AI services. Only configure real
+credentials for an explicitly scoped integration test, and never commit them.
+
+## Reference Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Backend API](docs/API.md)
+- [Backend guide](backend/README.md)
+- [Frontend guide](frontend/README.md)
+- [SDK guide](sdk/README.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Security policy](SECURITY.md)
+
+## Branch Naming
 
 ```
 feat/description     # New features
