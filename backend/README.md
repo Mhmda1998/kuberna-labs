@@ -108,7 +108,20 @@ Contract addresses (Base Sepolia):
 
 Full list in `backend/.env.example` (18 contracts total).
 
-Optional: `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `REDIS_URL`, `SMTP_*`, `SENTRY_DSN`, `NATS_URL`.
+Optional: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `REDIS_URL`, `SMTP_*`, `SENTRY_DSN`, `NATS_URL`.
+
+### Sponsor Integrations
+
+| Sponsor | Env Vars | Status |
+|---------|----------|--------|
+| **Virtuals** | `AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL` | ✅ Live on Render |
+| **Stripe** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | 🔧 Needs API key |
+| **Kite AI** | `KITE_PASSPORT_API`, `KITE_RPC_URL`, `KITE_CHAIN_ID` | 🔧 Needs keys |
+| **SilentVerify** | `SILENTVERIFY_API_KEY` | 🔧 Dev key only |
+| **Pyth Network** | None (public API) | ✅ Live |
+| **Phala/Marlin** | `PHALA_API_KEY`, `MARLIN_API_KEY` | 📝 Code ready |
+| **Reclaim/zkPass** | `RECLAIM_APP_ID`, `RECLAIM_APP_SECRET`, `ZKPASS_API_KEY` | 📝 Code ready |
+| **MoonPay/Transak** | `MOONPAY_API_KEY`, `TRANSAK_API_KEY` | 📝 Code ready |
 
 See [Architecture Overview](../docs/ARCHITECTURE.md) for AI parser and agent decision engine configuration.
 
