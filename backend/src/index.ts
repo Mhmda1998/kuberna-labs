@@ -49,7 +49,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    if (!origin && !isProduction) {
+    if (!origin) {
       return callback(null, true);
     }
 
