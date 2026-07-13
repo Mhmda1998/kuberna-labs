@@ -176,6 +176,8 @@ export type {
 } from './silentverify.js';
 export { SilentVerifyManager } from './silentverify.js';
 export { KiteManager } from './kite.js';
+export { Erc8004Adapter } from './verify/erc8004-adapter.js';
+export type { Erc8004AdapterConfig } from './verify/erc8004-adapter.js';
 export { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 export type {
   CrossChainIdentityRecord,
