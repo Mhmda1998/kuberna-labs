@@ -178,6 +178,12 @@ export { SilentVerifyManager } from './silentverify.js';
 export { KiteManager } from './kite.js';
 export { Erc8004Adapter } from './verify/erc8004-adapter.js';
 export type { Erc8004AdapterConfig } from './verify/erc8004-adapter.js';
+export { IdentityResolver } from './verify/identity-resolver.js';
+export { VerifierRouterClient } from './verify/verifier-router.js';
+export { ExecutionProofBuilder, createStep } from './verify/execution-proof.js';
+export { MandateBuilder } from './verify/mandate.js';
+export { kubernaToOmWorld, structuredToOmWorld, omWorldToKubernaNormalized, computeIntentId, canonicalIntentJson } from './verify/intent-translator.js';
+export { jcsCanonicalize, jcsHash } from './verify/jcs.js';
 export { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 export type {
   CrossChainIdentityRecord,
@@ -242,3 +248,11 @@ export {
   evaluateConfirmation,
   createVerifierRegistry,
 } from './tee-verifier.js';
+export {
+  KubernaError,
+  AuthenticationError,
+  ValidationError,
+  NotFoundError,
+  ConfigurationError,
+  NetworkError,
+} from './errors.js';

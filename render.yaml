@@ -83,3 +83,21 @@ services:
         sync: false
       - key: DISCORD_WEBHOOK_URL
         sync: false
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_BASE_URL
+        sync: false
+      - key: AI_MODEL
+        sync: false
+      - key: VIRTUAL_API_KEY
+        sync: false
+      - key: VIRTUAL_API_BASE_URL
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: KITE_PASSPORT_API
+        sync: false
+      - key: KITE_RPC_URL
+        sync: false
+      - key: SILENTVERIFY_API_KEY
+        sync: false
