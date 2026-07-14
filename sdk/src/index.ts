@@ -12,6 +12,8 @@ import { AiManager } from './ai.js';
 import { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 import { SilentVerifyManager } from './silentverify.js';
 import { KiteManager } from './kite.js';
+import { DubstrataManager } from './dubstrata.js';
+import { VirtualsManager } from './virtuals.js';
 
 export interface KubernaConfig {
   apiKey?: string;
@@ -256,3 +258,36 @@ export {
   ConfigurationError,
   NetworkError,
 } from './errors.js';
+export { DubstrataManager, DubstrataError } from './dubstrata.js';
+export { VirtualsManager, VirtualsError } from './virtuals.js';
+export type {
+  VirtualsConfig,
+  VirtualsModel,
+  ChatParams,
+  ChatResult,
+  ComputeBalance,
+  ACPOffering,
+  ACPJob,
+  ACPServiceEvent,
+  AgentIdentity,
+} from './virtuals.js';
+export type {
+  DubstrataConfig,
+  QueryRequest,
+  QueryResponse,
+  IntelligenceReportRequest,
+  IntelligenceReportResponse,
+  IngestRequest,
+  IngestResponse,
+  FeedbackRequest,
+  FeedbackResult,
+  AgentWalletUpdateRequest,
+  AgentWalletUpdateResult,
+  Claim,
+  Relation,
+  Source,
+  PriceAction,
+  IntelligenceReport,
+  StructuredQueryResult,
+  StructuredReportResult,
+} from './dubstrata.js';

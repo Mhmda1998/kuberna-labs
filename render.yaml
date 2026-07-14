@@ -93,6 +93,8 @@ services:
         sync: false
       - key: VIRTUAL_API_BASE_URL
         sync: false
+      - key: VIRTUAL_WS_URL
+        sync: false
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
       - key: KITE_PASSPORT_API
@@ -100,4 +102,9 @@ services:
       - key: KITE_RPC_URL
         sync: false
       - key: SILENTVERIFY_API_KEY
+        sync: false
+      # Dubstrata — causal financial intelligence CDN for AI agents
+      - key: DUBSTRATA_API_KEY
+        sync: false
+      - key: DUBSTRATA_BALANCE_USDC
         sync: false
