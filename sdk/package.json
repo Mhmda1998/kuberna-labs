@@ -1,6 +1,6 @@
 {
   "name": "@kuberna/sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Production-grade SDK for Kuberna Labs - Agentic Web3 Enterprise",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,8 +36,7 @@
     "kuberna"
   ],
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "author": "Arnaud Kennedy",
   "license": "MIT",
