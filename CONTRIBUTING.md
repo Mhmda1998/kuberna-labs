@@ -1,238 +1,124 @@
 # Contributing to Kuberna Labs
 
-Thank you for considering contributing. This document outlines the development workflow, code standards, and PR process.
-
-## Table of Contents
-
-- [Code of Conduct](#code-of-conduct)
-- [Development Setup](#development-setup)
-- [Code Style](#code-style)
-- [Commit Messages](#commit-messages)
-- [Pull Request Process](#pull-request-process)
-- [Testing](#testing)
-- [Code Review](#code-review)
+First off, thanks for taking the time to contribute! 🎉
 
 ## Code of Conduct
 
-This project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
+This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating you agree to uphold its terms.
 
-## Development Setup
+## How to Contribute
 
-### Prerequisites
+### 🐛 Report Bugs
 
-- Node.js >= 18.0.0
-- npm >= 9.0.0
-- PostgreSQL 14+ (or Supabase account for managed DB)
-- Git
-- WalletConnect Project ID (free at https://cloud.walletconnect.com)
+1. Check existing [issues](https://github.com/kawacukennedy/kuberna-labs/issues) for duplicates
+2. Use the [bug report template](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=bug&template=bug_report.md)
+3. Include reproduction steps, expected vs actual behavior, and environment details
 
-### Setup Steps
+### 💡 Suggest Features
+
+1. Search [existing discussions](https://github.com/kawacukennedy/kuberna-labs/discussions) for similar ideas
+2. Use the [feature request template](https://github.com/kawacukennedy/kuberna-labs/issues/new?labels=enhancement&template=feature_request.md)
+3. Explain the problem you're solving and how the feature would work
+
+### 🛠️ Submit Code Changes
+
+#### 1. Find or Create an Issue
+
+- Start with [`good first issue`](https://github.com/kawacukennedy/kuberna-labs/labels/good%20first%20issue) or [`help wanted`](https://github.com/kawacukennedy/kuberna-labs/labels/help%20wanted) labels
+- Comment on the issue to let others know you're working on it
+- For new work, open an issue first to discuss before writing code
+
+#### 2. Set Up Your Environment
 
 ```bash
-# 1. Fork and clone
-git clone https://github.com/YOUR_USERNAME/kuberna-labs.git
+# Clone the repo
+git clone https://github.com/kawacukennedy/kuberna-labs.git
 cd kuberna-labs
 
-# 2. Install all dependencies
+# Install dependencies
 npm install
-cd backend && npm install && cd ..
-cd frontend && npm install && cd ..
-cd sdk && npm install && cd ..
 
-# 3. Configure environment
-cp backend/.env.example backend/.env
-# Edit backend/.env: set DATABASE_URL, DIRECT_URL, JWT_SECRET
-
-# 4. Set up database
-cd backend && npx prisma migrate dev && cd ..
-
-# 5. Compile contracts (optional, for contract work)
-npm run compile
-
-# 6. Verify setup
-cd backend && npm test && cd ..
+# Copy environment file
+cp .env.example .env
 ```
 
-### Branch Naming
-
-```
-feat/description     # New features
-fix/description      # Bug fixes
-docs/description     # Documentation
-test/description     # Test additions/changes
-refactor/description # Code refactoring
-perf/description     # Performance improvements
-chore/description    # Build/tooling changes
-```
-
-## Code Style
-
-### TypeScript
-
-- Strict mode enabled in all `tsconfig.json` files
-- All files must pass TypeScript compilation (`tsc --noEmit`)
-- Prefer `const` over `let`
-- Use `async/await` over raw promises
-- Use explicit return types on public function signatures
-- Use Zod schemas for runtime validation (backend)
-- No `any` — use `unknown` and type narrowing instead
-
-### Formatting
-
-- **Prettier** is enforced via `.prettierrc.json` and CI
-- Run before committing: `npm run format`
-- 100 character print width, single quotes, trailing commas
-- Solidity files formatted with `prettier-plugin-solidity`
-
-### Linting
-
-- ESLint with `@typescript-eslint` rules
-- `solhint` for Solidity files
-- Run: `npm run lint`
-
-### Solidity
-
-- Solidity ^0.8.20 with optimizer enabled (200 runs)
-- Use OpenZeppelin contracts for standards (ERC20, ERC721, Ownable, Pausable, ReentrancyGuard)
-- Include NatSpec comments (`@title`, `@dev`, `@param`, `@return`)
-- Use custom errors instead of `require` with string messages
-- Add reentrancy protection where needed
-- Emit events for all state-changing operations
-
-## Commit Messages
-
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-type(scope): subject
-
-body
-
-footer
-```
-
-### Types
-
-| Type       | Usage                                   |
-| ---------- | --------------------------------------- |
-| `feat`     | New feature                             |
-| `fix`      | Bug fix                                 |
-| `docs`     | Documentation only                      |
-| `style`    | Code style (formatting, semicolons)     |
-| `refactor` | Code change that neither fixes nor adds |
-| `perf`     | Performance improvement                 |
-| `test`     | Adding or fixing tests                  |
-| `chore`    | Build process, dependencies, tooling    |
-
-### Scopes
-
-`backend`, `frontend`, `sdk`, `contracts`, `prisma`, `ci`, `deps`, `docs`
-
-### Examples
-
-```
-feat(contracts): add Pausable to Escrow with emergency pause
-
-- Add whenNotPaused modifier to all state-changing functions
-- Implement pause/unpause with onlyOwner access
-- Add tests for pause functionality during active escrows
-
-Closes #123
-```
-
-```
-fix(backend): handle null agent config in orchestrator
-
-Agent orchestrator crashes when config is null after deployment.
-Add null check before accessing config properties.
-
-Fixes #456
-```
-
-## Pull Request Process
-
-1. **Keep your branch up to date**:
-
-   ```bash
-   git remote add upstream https://github.com/kawacukennedy/kuberna-labs.git
-   git fetch upstream
-   git rebase upstream/main
-   ```
-
-2. **Run all checks locally** before pushing:
-
-   ```bash
-   npm run format:check
-   npm run lint
-   npm test              # Contract tests
-   cd backend && npm test && cd ..
-   cd frontend && npm test && cd ..
-   cd sdk && npm test && cd ..
-   ```
-
-3. **Push and create a PR** with a descriptive title and body that links related issues.
-
-4. **PR checklist**:
-   - Changes include tests (unit + integration where applicable)
-   - All existing tests pass
-   - Code is formatted (`npm run format`)
-   - No TypeScript errors (`tsc --noEmit` in each package)
-   - API changes are documented (routes, request/response schemas)
-   - Contract changes include gas reports
-
-## Testing
-
-### Requirements
-
-- All new features must include tests
-- Bug fixes must include a regression test
-- Aim for >80% code coverage on changed code
-
-### Running Tests
+#### 3. Create a Branch
 
 ```bash
-# Hardhat contract tests
-npx hardhat test
-npx hardhat coverage    # Solidity coverage
-
-# Backend (Jest + supertest)
-cd backend && npm test
-cd backend && npm test -- --coverage
-
-# Frontend (Jest + React Testing Library)
-cd frontend && npm test
-
-# SDK (Jest)
-cd sdk && npm test
+git checkout -b feat/my-feature
+# or
+git checkout -b fix/my-bugfix
 ```
 
-### Test Conventions
+Branch naming:
+- `feat/` — new features
+- `fix/` — bug fixes
+- `docs/` — documentation only
+- `test/` — test additions or fixes
+- `refactor/` — code restructuring
+- `chore/` — tooling, CI, dependencies
 
-- Contract tests: `test/*.ts` using Hardhat + chai matchers
-- Backend unit tests: `backend/src/__tests__/` or `backend/src/**/__tests__/`
-- Frontend tests: `frontend/src/__tests__/`
-- Test files mirror source file names with `.test.ts` suffix
-- Mock external services (blockchain RPC, email, Stripe) in backend tests
-- Use `fast-check` for property-based testing where appropriate
+#### 4. Make Your Changes
 
-## Code Review
+- Follow the existing code style (Prettier and ESLint are configured)
+- Add tests for new functionality
+- Update documentation as needed
+- Keep pull requests focused — one feature/fix per PR
 
-### Reviewer Responsibilities
+#### 5. Run Checks
 
-- Verify the change solves the described problem
-- Check for security concerns (input validation, access control, reentrancy)
-- Ensure adequate test coverage
-- Confirm documentation is updated
-- Flag performance issues
-- Verify TypeScript strictness is maintained
+```bash
+# Lint
+npm run lint
 
-### Author Responsibilities
+# Format check
+npm run format:check
 
-- Respond to all review comments
-- Keep PR scope focused (one feature/fix per PR)
-- Re-request review after addressing feedback
-- Squash commits before merge (the project uses squash merges)
+# Run tests
+npm test
 
-## License
+# Smart contract tests
+npx hardhat test
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+# Build
+npm run build
+```
+
+#### 6. Commit
+
+We use conventional commits:
+
+```
+feat: add cross-chain swap intent parser
+fix: handle null balance in wallet query
+docs: update README with new API endpoints
+test: add unit tests for VirtualsManager
+```
+
+#### 7. Open a Pull Request
+
+- Use the [pull request template](https://github.com/kawacukennedy/kuberna-labs/blob/main/.github/pull_request_template.md)
+- Link the issue your PR addresses (`Closes #123`)
+- Keep the description clear and focused
+- Ensure all CI checks pass
+
+### Areas to Contribute
+
+| Area | Description | Location |
+|---|---|---|
+| **SDK** | TypeScript client library | `sdk/` |
+| **Smart Contracts** | Solidity contracts (Escrow, Dispute, Router, etc.) | `contracts/` |
+| **Backend** | Node.js API server | `backend/` |
+| **Frontend** | Next.js dashboard | (root `pages/`, `components/`) |
+| **Documentation** | README, guides, JSDoc, NatSpec | `.md` files, inline docs |
+| **DevOps** | CI/CD, Docker, Render config | `.github/`, `render.yaml`, `Dockerfile` |
+
+## Getting Help
+
+- **Discord:** [Join the server](https://discord.gg/MZvNuhpXu)
+- **Discussions:** [GitHub Discussions](https://github.com/kawacukennedy/kuberna-labs/discussions)
+- **Issues:** Open a question issue or tag `@kawacukennedy`
+
+## Recognition
+
+Contributors are listed in our Discord and may be invited as project collaborators. First-time contributors get a special role in our community.
