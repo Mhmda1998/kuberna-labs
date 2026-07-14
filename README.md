@@ -239,9 +239,9 @@ kuberna-labs/
 
 ## Deployment
 
-Kuberna is configured for one-click deployment on [Render](https://render.com) via `render.yaml` (Blueprint). Manual setup also supported.
+**Production URL:** [https://kuberna-labs.onrender.com](https://kuberna-labs.onrender.com)
 
-See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for full instructions.
+Kuberna is deployed on **Render** (starter plan, Oregon) via `render.yaml` (Blueprint). Auto-deploys on push to `main`. Health check: `GET /health`.
 
 ### Production Environment Variables
 
@@ -250,11 +250,30 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for full instructions.
 | `DATABASE_URL`                         | Supabase transaction pooler URL    |
 | `DIRECT_URL`                           | Supabase direct URL for migrations |
 | `JWT_SECRET`                           | JWT signing key                    |
+| `JWT_REFRESH_SECRET`                   | JWT refresh key                    |
+| `ALLOWED_ORIGINS`                      | CORS allowlist                     |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | WalletConnect Cloud project ID     |
 | `RPC_URL`                              | Blockchain RPC endpoint            |
 | `PRIVATE_KEY`                          | Backend wallet private key         |
+| `AI_API_KEY`                           | Virtuals ACP API key (AI backend)  |
+| `AI_BASE_URL`                          | Virtuals compute endpoint          |
+| `AI_MODEL`                             | LLM model (Claude Opus 4)          |
 
-Optional: `REDIS_URL`, `OPENAI_API_KEY`, `STRIPE_SECRET_KEY`, `SMTP_*` for extended features.
+Optional: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `REDIS_URL`, `SMTP_*` for extended features.
+
+### Sponsor Integrations
+
+| Sponsor | Status | What It Powers |
+|---------|--------|----------------|
+| **Virtuals** | ✅ Live | LLM backend (Claude Opus 4 via ACP) |
+| **Pyth Network** | ✅ Live | Price oracle (ETH, BTC, USDC) |
+| **Discord** | ✅ Live | CI notifications + GitHub star alerts |
+| **Stripe** | 🔧 Code ready | Fiat payments + subscriptions (needs API key) |
+| **Kite AI** | 🔧 Code ready | Agent payments (x402 protocol) |
+| **SilentVerify** | 🔧 Code ready | Post-quantum agent PKI |
+| **Infura / Alchemy** | ✅ Local | RPC providers for contract deployment |
+
+*See [docs/FUNDING-REPORT.md](./docs/FUNDING-REPORT.md) for a full list of 78+ funding opportunities across 7 categories.*
 
 ---
 

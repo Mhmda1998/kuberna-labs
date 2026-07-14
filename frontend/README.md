@@ -197,6 +197,34 @@ Tests use Jest with React Testing Library for component tests. Mock network requ
 | `npm run lint` | ESLint via Next.js |
 | `npm test` | Run Jest tests |
 
+## Production Deployment
+
+The app runs on **Render** (starter plan, Oregon) at [kuberna-labs.onrender.com](https://kuberna-labs.onrender.com).
+
+| Service | Tech |
+|---------|------|
+| Hosting | Render Web Service |
+| Database | Supabase PostgreSQL (transaction pooler) |
+| Backend | Node.js + Express + TypeScript |
+| Frontend | Next.js 14 static export |
+| Auth | JWT (seeded users: admin/instructor/learner) |
+
+Deploys are automatic on push to `main`. Health check: `GET /health`.
+
+## Sponsor Integrations
+
+| Sponsor | Status | What It Powers |
+|---------|--------|----------------|
+| **Virtuals** | ✅ Live | LLM/AI backend (Claude Opus 4) |
+| **Stripe** | 🔧 Code ready | Payments (needs real API key) |
+| **Pyth Network** | ✅ Live | Price oracle (public API, no key) |
+| **Kite AI** | 🔧 Code ready | Agent payments (x402 protocol) |
+| **SilentVerify** | 🔧 Code ready | Post-quantum agent PKI |
+| **Discord** | ✅ Live | CI notifications + star alerts |
+| **Infura / Alchemy** | ✅ Local | RPC providers for contract deployment |
+
+Pending integrations: Tollbeam (AA paymaster), Dubstrata (prediction market data), Phala/Marlin (TEE), Reclaim/zkPass (zkTLS), MoonPay/Transak (fiat on-ramp).
+
 ## Related
 
 - [Backend README](../backend/README.md)

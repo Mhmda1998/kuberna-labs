@@ -62,17 +62,19 @@ function shouldCountFailure(error: unknown): boolean {
 const circuitBreaker = new CircuitBreaker({
   failureThreshold: 3,
   resetTimeout: 30_000,
-  name: 'OpenAI',
+  name: 'LLM',
   shouldCountFailure,
 });
 
 export class AIService {
   private apiKey: string;
   private baseUrl: string;
+  private model: string;
 
   constructor() {
     this.apiKey = process.env.AI_API_KEY || "";
     this.baseUrl = process.env.AI_BASE_URL || "https://api.openai.com/v1";
+    this.model = process.env.AI_MODEL || "gpt-4-turbo-preview";
   }
 
   async parseIntentFromNaturalLanguage(
@@ -114,7 +116,7 @@ Respond with ONLY JSON, no markdown, no explanation.`;
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4-turbo-preview",
+            model: this.model,
             messages: [{ role: "user", content: prompt }],
             temperature: 0.1,
             max_tokens: 500,
@@ -212,7 +214,7 @@ Generate production-quality code with proper error handling, logging, and config
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4-turbo-preview",
+            model: this.model,
             messages: [{ role: "user", content: prompt }],
             temperature: 0.2,
             max_tokens: 4000,
@@ -258,7 +260,7 @@ Generate production-quality code with proper error handling, logging, and config
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4-turbo-preview",
+            model: this.model,
             messages: [
               {
                 role: "system",
@@ -303,7 +305,7 @@ ${code}`;
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4-turbo-preview",
+            model: this.model,
             messages: [{ role: "user", content: prompt }],
             temperature: 0.3,
             max_tokens: 1000,
@@ -361,7 +363,7 @@ ${code}`;
             Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4-turbo-preview",
+            model: this.model,
             messages: [{ role: "user", content: prompt }],
             temperature: 0.1,
             max_tokens: 1000,

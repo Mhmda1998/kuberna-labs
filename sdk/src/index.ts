@@ -12,6 +12,8 @@ import { AiManager } from './ai.js';
 import { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 import { SilentVerifyManager } from './silentverify.js';
 import { KiteManager } from './kite.js';
+import { DubstrataManager } from './dubstrata.js';
+import { VirtualsManager } from './virtuals.js';
 
 export interface KubernaConfig {
   apiKey?: string;
@@ -178,6 +180,12 @@ export { SilentVerifyManager } from './silentverify.js';
 export { KiteManager } from './kite.js';
 export { Erc8004Adapter } from './verify/erc8004-adapter.js';
 export type { Erc8004AdapterConfig } from './verify/erc8004-adapter.js';
+export { IdentityResolver } from './verify/identity-resolver.js';
+export { VerifierRouterClient } from './verify/verifier-router.js';
+export { ExecutionProofBuilder, createStep } from './verify/execution-proof.js';
+export { MandateBuilder } from './verify/mandate.js';
+export { kubernaToOmWorld, structuredToOmWorld, omWorldToKubernaNormalized, computeIntentId, canonicalIntentJson } from './verify/intent-translator.js';
+export { jcsCanonicalize, jcsHash } from './verify/jcs.js';
 export { CrossChainIdentityManager } from './identity/crossChainIdentity.js';
 export type {
   CrossChainIdentityRecord,
@@ -242,3 +250,44 @@ export {
   evaluateConfirmation,
   createVerifierRegistry,
 } from './tee-verifier.js';
+export {
+  KubernaError,
+  AuthenticationError,
+  ValidationError,
+  NotFoundError,
+  ConfigurationError,
+  NetworkError,
+} from './errors.js';
+export { DubstrataManager, DubstrataError } from './dubstrata.js';
+export { VirtualsManager, VirtualsError } from './virtuals.js';
+export type {
+  VirtualsConfig,
+  VirtualsModel,
+  ChatParams,
+  ChatResult,
+  ComputeBalance,
+  ACPOffering,
+  ACPJob,
+  ACPServiceEvent,
+  AgentIdentity,
+} from './virtuals.js';
+export type {
+  DubstrataConfig,
+  QueryRequest,
+  QueryResponse,
+  IntelligenceReportRequest,
+  IntelligenceReportResponse,
+  IngestRequest,
+  IngestResponse,
+  FeedbackRequest,
+  FeedbackResult,
+  AgentWalletUpdateRequest,
+  AgentWalletUpdateResult,
+  Claim,
+  Relation,
+  Source,
+  PriceAction,
+  IntelligenceReport,
+  StructuredQueryResult,
+  StructuredReportResult,
+} from './dubstrata.js';
