@@ -1,0 +1,79 @@
+{
+  "$schema": "kuberna-authority-receipt-v1",
+  "receipt_type": "chain_derivable",
+  "scope_version": "delegation-scope-v1",
+
+  "fact_id": "0xa7c3e2f1d8b406e5924cf3a187db6052ed1c4fa3b89e07d26c45a31f0e894b6d",
+
+  "subject": {
+    "erc8004_token_id": "10042",
+    "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B",
+    "name": "KubernaSwap Agent v3",
+    "framework": "kuberna-sdk@0.3.1",
+    "reputation_score": 842,
+    "success_rate": 9670,
+    "star_rating": 4,
+    "badges": ["cross-chain-native", "first-fill", "sub-second"],
+    "total_tasks": 312,
+    "successful_tasks": 302,
+    "metadata_uri": "ipfs://QmXk4rT9pL2mN8vJ6wE3yQ1zR5tY7uI4oP2aS9dF8gH",
+    "chain_id": 84532
+  },
+
+  "chain_derivable_authority": {
+    "spec_version": "0.2.0",
+    "intent_id": "0x3f8a1b2c4d5e6f7089abcdef01234567890abcdef123456789abcdef01234567",
+    "agent": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B",
+    "agent_scheme": "erc-8004",
+    "plan_hash": "0xb4e2a1c3d5f7092a8b1c3d5e7f90a2b4c6d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6",
+    "bond": "100000000000000000",
+    "fee_quote": "5000000000000000",
+    "tools_declared": ["cross_chain_swap", "bridge_adapter", "liquidity_router"],
+    "deadline": "2026-07-30T23:59:59.000Z",
+    "issued_at": "2026-07-15T14:32:07.481Z",
+    "commitment_signature": "0xdeadbeef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+  },
+
+  "delegation_scope": {
+    "version": "delegation-scope-v1",
+    "principal": "0x90aBcDeF0123456789abcdef0123456789aBcDef",
+    "body": "Swap 5000 USDC on Base for USDT on Polygon, slippage <= 0.3%",
+    "constraints": {
+      "budget": "5000000000000000000",
+      "deadline": "2026-07-30T23:59:59.000Z",
+      "jurisdiction": ["US", "RW", "SG"],
+      "allowed_tools": ["cross_chain_swap", "bridge_adapter", "liquidity_router"],
+      "max_gas": "5000000"
+    },
+    "success_criteria": {
+      "type": "exact_output",
+      "conditions": [
+        { "field": "filled_amount", "operator": ">=", "value": "4985000000" },
+        { "field": "destination_token", "operator": "==", "value": "USDT" },
+        { "field": "bridge_status", "operator": "==", "value": "confirmed" }
+      ]
+    },
+    "attestation": {
+      "type": ["zktls", "tee"],
+      "scheme": "tlsn-v1",
+      "verifier": {
+        "tlsn": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+        "tee": "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
+      },
+      "fallback": "signed_log"
+    },
+    "nonce": "1721053927481-a3xk9bm2f",
+    "issued_at": "2026-07-15T14:32:07.481Z",
+    "expires_at": "2026-07-30T23:59:59.000Z"
+  },
+
+  "fact_id_derivation": {
+    "scheme": "jcs-sha256",
+    "description": "SHA-256 of the JCS-canonicalized intent object (excluding id and signature fields)",
+    "preimage_fields": [
+      "principal", "body", "constraints", "success_criteria",
+      "executor", "attestation", "on_expire", "nonce", "issued_at", "expires_at"
+    ],
+    "bytes32": "0xa7c3e2f1d8b406e5924cf3a187db6052ed1c4fa3b89e07d26c45a31f0e894b6d"
+  }
+}
