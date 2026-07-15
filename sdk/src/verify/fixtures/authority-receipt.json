@@ -3,21 +3,12 @@
   "receipt_type": "chain_derivable",
   "scope_version": "delegation-scope-v1",
 
-  "fact_id": "0xa7c3e2f1d8b406e5924cf3a187db6052ed1c4fa3b89e07d26c45a31f0e894b6d",
+  "fact_id": "0x2369ba13f2ab8beba8dcd01fcd1b8c8e49076bc7019fda4eb80e1bf1b22a7c0e",
 
   "subject": {
     "erc8004_token_id": "10042",
     "agent_address": "0x1B2c3D4E5F6a7B8C9D0E1F2a3B4c5D6e7F809a1B",
-    "name": "KubernaSwap Agent v3",
-    "framework": "kuberna-sdk@0.3.1",
-    "reputation_score": 842,
-    "success_rate": 9670,
-    "star_rating": 4,
-    "badges": ["cross-chain-native", "first-fill", "sub-second"],
-    "total_tasks": 312,
-    "successful_tasks": 302,
-    "metadata_uri": "ipfs://QmXk4rT9pL2mN8vJ6wE3yQ1zR5tY7uI4oP2aS9dF8gH",
-    "chain_id": 84532
+    "name": "KubernaSwap Agent v3"
   },
 
   "chain_derivable_authority": {
@@ -31,7 +22,8 @@
     "tools_declared": ["cross_chain_swap", "bridge_adapter", "liquidity_router"],
     "deadline": "2026-07-30T23:59:59.000Z",
     "issued_at": "2026-07-15T14:32:07.481Z",
-    "commitment_signature": "0xdeadbeef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+    "commitment_signature": "0xdeadbeef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+    "synthetic": true
   },
 
   "delegation_scope": {
@@ -53,15 +45,6 @@
         { "field": "bridge_status", "operator": "==", "value": "confirmed" }
       ]
     },
-    "attestation": {
-      "type": ["zktls", "tee"],
-      "scheme": "tlsn-v1",
-      "verifier": {
-        "tlsn": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
-        "tee": "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
-      },
-      "fallback": "signed_log"
-    },
     "nonce": "1721053927481-a3xk9bm2f",
     "issued_at": "2026-07-15T14:32:07.481Z",
     "expires_at": "2026-07-30T23:59:59.000Z"
@@ -69,11 +52,11 @@
 
   "fact_id_derivation": {
     "scheme": "jcs-sha256",
-    "description": "SHA-256 of the JCS-canonicalized intent object (excluding id and signature fields)",
+    "description": "SHA-256 of the JCS-canonicalized delegation_scope object (excluding version field per AIPOU envelope convention)",
     "preimage_fields": [
       "principal", "body", "constraints", "success_criteria",
-      "executor", "attestation", "on_expire", "nonce", "issued_at", "expires_at"
+      "nonce", "issued_at", "expires_at"
     ],
-    "bytes32": "0xa7c3e2f1d8b406e5924cf3a187db6052ed1c4fa3b89e07d26c45a31f0e894b6d"
+    "bytes32": "0x2369ba13f2ab8beba8dcd01fcd1b8c8e49076bc7019fda4eb80e1bf1b22a7c0e"
   }
 }
