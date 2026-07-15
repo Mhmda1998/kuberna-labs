@@ -1,0 +1,22 @@
+{
+  "principal": "0x90aBcDeF0123456789abcdef0123456789aBcDef",
+  "body": "Swap 5000 USDC on Base for USDT on Polygon, slippage <= 0.3%",
+  "constraints": {
+    "budget": "5000000000000000000",
+    "deadline": "2026-07-30T23:59:59.000Z",
+    "jurisdiction": ["US", "RW", "SG"],
+    "allowed_tools": ["cross_chain_swap", "bridge_adapter", "liquidity_router"],
+    "max_gas": "5000000"
+  },
+  "success_criteria": {
+    "type": "exact_output",
+    "conditions": [
+      { "field": "filled_amount", "operator": ">=", "value": "4985000000" },
+      { "field": "destination_token", "operator": "==", "value": "USDT" },
+      { "field": "bridge_status", "operator": "==", "value": "confirmed" }
+    ]
+  },
+  "nonce": "1721053927481-a3xk9bm2f",
+  "issued_at": "2026-07-15T14:32:07.481Z",
+  "expires_at": "2026-07-30T23:59:59.000Z"
+}
