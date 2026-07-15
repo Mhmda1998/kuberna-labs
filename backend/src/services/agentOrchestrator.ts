@@ -134,7 +134,7 @@ export class AgentOrchestratorService {
           await prisma.task.create({
             data: {
               intentId: intent.id,
-              assignedAgentId: agentId,
+              assignedAgentId: agent.ownerId,
               status: 'ASSIGNED',
             },
           });

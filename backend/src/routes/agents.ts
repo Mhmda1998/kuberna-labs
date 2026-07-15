@@ -221,7 +221,7 @@ router.post('/', authenticate, async (req: AuthRequest, res: Response, next: Nex
         tools: tools || [],
         codeRepo,
         deploymentType: deploymentType || 'CLOUD',
-        pricingModel: pricingModel || 'fixed',
+        pricingModel: (pricingModel || 'FIXED').toUpperCase() as 'FIXED' | 'HOURLY' | 'SUCCESS',
         price,
         status: 'DRAFT',
       },

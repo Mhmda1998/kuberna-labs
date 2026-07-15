@@ -477,14 +477,18 @@ export class BlockchainListener {
             });
 
             // Update reputation for the assigned agent
-            const assignedAgentId = intent.task.assignedAgentId;
-            if (assignedAgentId) {
+            const acceptedBid = await prisma.bid.findFirst({
+              where: { intentId: intent.id, status: 'ACCEPTED' },
+              select: { agentId: true },
+            });
+            const agentIdForReputation = acceptedBid?.agentId || intent.task.assignedAgentId;
+            if (agentIdForReputation) {
               const reputation = await prisma.reputation.findUnique({
-                where: { agentId: assignedAgentId },
+                where: { agentId: agentIdForReputation },
               });
               if (reputation) {
                 await prisma.reputation.update({
-                  where: { agentId: assignedAgentId },
+                  where: { agentId: agentIdForReputation },
                   data: {
                     totalTasks: { increment: 1 },
                     successfulTasks: { increment: 1 },
@@ -506,10 +510,14 @@ export class BlockchainListener {
 
           // Issue SilentVerify certificates for the agent
           try {
-            const assignedAgentId = intent.task?.assignedAgentId;
-            if (assignedAgentId) {
+            const certAgentBid = await prisma.bid.findFirst({
+              where: { intentId: intent.id, status: 'ACCEPTED' },
+              select: { agentId: true },
+            });
+            const agentForCert = certAgentBid?.agentId || (intent.task ? intent.task.assignedAgentId : null);
+            if (agentForCert) {
               const agent = await prisma.agent.findUnique({
-                where: { id: assignedAgentId },
+                where: { id: agentForCert },
                 include: { owner: { select: { web3Address: true } } },
               });
               if (agent) {
@@ -517,7 +525,7 @@ export class BlockchainListener {
                 const task = intent.task;
                 const txHash = task?.txHash || event.transactionHash;
                 await agentService.issueCertificatesForTaskCompletion(
-                  assignedAgentId,
+                  agent.id,
                   agentDid,
                   escrowId.toString(),
                   chain,
@@ -528,7 +536,7 @@ export class BlockchainListener {
                     task_description: intent.description,
                   }
                 );
-                logger.info(`SilentVerify certs issued for agent ${assignedAgentId} on task completion`);
+                logger.info(`SilentVerify certs issued for agent ${agent.id} on task completion`);
               }
             }
           } catch (certError) {

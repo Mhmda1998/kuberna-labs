@@ -374,6 +374,14 @@ router.post(
         throw createError('Bid is no longer available', 400, 'INVALID_STATUS');
       }
 
+      const biddingAgent = await prisma.agent.findUnique({
+        where: { id: bid.agentId },
+        select: { ownerId: true },
+      });
+      if (!biddingAgent) {
+        throw createError('Bidding agent not found', 404, 'AGENT_NOT_FOUND');
+      }
+
       await prisma.$transaction([
         prisma.bid.update({
           where: { id: bidId },
@@ -391,13 +399,13 @@ router.post(
           where: { id },
           data: {
             status: 'ASSIGNED',
-            selectedSolverId: bid.agentId,
+            selectedSolverId: biddingAgent.ownerId,
           },
         }),
         prisma.task.create({
           data: {
             intentId: id,
-            assignedAgentId: bid.agentId,
+            assignedAgentId: biddingAgent.ownerId,
             status: 'ASSIGNED',
           },
         }),
