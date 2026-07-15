@@ -35,6 +35,7 @@ _It helps others discover the project and motivates contributors._
 - [Available Scripts](#available-scripts)
 - [Contributing](#contributing)
 - [Community](#community)
+- [Contributors](#contributors)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -312,6 +313,22 @@ Have an idea? [Submit a feature request](https://github.com/kawacukennedy/kubern
 - **💬 GitHub Discussions:** [Join the conversation](https://github.com/kawacukennedy/kuberna-labs/discussions)
 - **📚 Documentation:** Coming soon
 - **🛡️ Security:** Report vulnerabilities to [security@kubernalabs.com](mailto:security@kubernalabs.com)
+
+### Contributors
+
+Thanks to everyone who has contributed to Kuberna Labs!
+
+[![Contributors](https://img.shields.io/github/contributors/kawacukennedy/kuberna-labs?logo=github)](https://github.com/kawacukennedy/kuberna-labs/graphs/contributors)
+[![All Contributors](https://img.shields.io/github/all-contributors/kawacukennedy/kuberna-labs?color=ee8449&style=flat)](#contributors)
+
+| | Contributor | Role |
+|---|---|---|
+| <img src="https://avatars.githubusercontent.com/u/105758154?v=4" width="32" height="32" alt=""> | [kawacukennedy](https://github.com/kawacukennedy) | Creator & Lead |
+| <img src="https://avatars.githubusercontent.com/u/66347959?v=4" width="32" height="32" alt=""> | [lovewave02](https://github.com/lovewave02) | Contributor |
+| <img src="https://avatars.githubusercontent.com/u/154255646?v=4" width="32" height="32" alt=""> | [KaustAbhinand](https://github.com/KaustAbhinand) | Contributor |
+| <img src="https://avatars.githubusercontent.com/u/149085611?v=4" width="32" height="32" alt=""> | [TiagooopNOC](https://github.com/TiagooopNOC) | Contributor |
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full list.
 
 ### Support Us
 
