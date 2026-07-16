@@ -121,7 +121,7 @@ export class VirtualsManager {
   private timeout: number;
 
   constructor(config: VirtualsConfig = {}) {
-    this.apiKey = config.apiKey || process.env.VIRTUAL_API_KEY || process.env.AI_API_KEY || '';
+    this.apiKey = config.apiKey || process.env.VIRTUALS_API_KEY || process.env.VIRTUAL_API_KEY || process.env.AI_API_KEY || '';
     this.computeUrl = config.computeUrl || VIRTUALS_COMPUTE_URL;
     this.acpUrl = config.acpUrl || VIRTUALS_ACP_URL;
     this.timeout = config.timeout || 30000;
