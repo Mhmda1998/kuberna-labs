@@ -85,12 +85,25 @@ export class AgentOrchestratorService {
       // Step 3: Evaluate market conditions
       const marketStep = addStep('market_analysis');
       const blockTimestamp = Math.floor(Date.now() / 1000);
-      const state = await marketData.getMarketState(blockTimestamp);
+      let state = await marketData.getMarketState(blockTimestamp);
+
+      let dubstrataSignals: Record<string, unknown> | undefined;
+      try {
+        const { dubstrataIntelligence } = await import('./dubstrataIntelligence.js');
+        const signals = await dubstrataIntelligence.getMarketSignals();
+        if (signals.length > 0) {
+          dubstrataSignals = { signals, count: signals.length };
+        }
+      } catch {
+        // Dubstrata enrichment is optional
+      }
+
       completeStep(marketStep, {
         prices: state.prices,
         dexPrices: state.dexPrices,
         apy: state.apy,
         timestamp: state.timestamp,
+        dubstrata: dubstrataSignals,
       });
 
       // Step 4: Agent decision

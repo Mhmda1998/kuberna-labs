@@ -2,6 +2,7 @@ import logger from '../utils/logger.js';
 import { localMemory } from './localMemory.js';
 import type { StructuredIntent } from './intentParser.js';
 import { priceFeed, PriceFeedService } from './priceFeed.js';
+import { dubstrataIntelligence } from './dubstrataIntelligence.js';
 
 export interface MarketState {
   prices: Record<string, number>;
@@ -150,7 +151,15 @@ export class AgentDecisionEngine {
     strategies: DecisionStrategy[],
     blockTimestamp: number,
   ): Promise<Action> {
-    const state = await marketData.getMarketState(blockTimestamp);
+    let state = await marketData.getMarketState(blockTimestamp);
+
+    try {
+      const enriched = await dubstrataIntelligence.enrichMarketState(state);
+      if (enriched) state = enriched;
+      logger.debug('Market state enriched with Dubstrata data', { agentId });
+    } catch {
+      logger.debug('Dubstrata enrichment skipped', { agentId });
+    }
 
     for (const strategy of strategies) {
       switch (strategy) {
