@@ -36,12 +36,12 @@ Complete Kuberna Labs deployment across target chains, submit to BNB hackathons,
 - **FK constraint bugs fixed** in orchestrator, intents route, blockchain listener
 - **Dubstrata integration built**: `DubstrataIntelligenceService` enriches market state with financial intelligence
 - **SDK v1.0.5 published**: `VIRTUALS_API_KEY` env var support added
+- **Virtuals $40 burn test completed**: 505 successful API calls across 3 models over ~81 min, $40.01 spent, $170 remaining
 
 ### Sponsorship Status
 
-- **Virtuals ($200/wk)**: Free inference credits active (Tier 1: Spark, week 2/4). ACP key `acp-cd4a8b03071a3903b8e7` authenticates but needs auto-billing authorized to access compute credits. Models listed: 52 available.
-- **Dubstrata ($100)**: API working, $99.79 remaining. Queries return real ETF/crypto price data, volatility, sentiment scores. Integrated into agent pipeline.
-- **Dubstrata fixes**: SDK base URL corrected to `api.dubstrata.com`, `/query` endpoint confirmed working, intelligence report needs `/query/intelligence-report` path.
+- **Virtuals ($200/wk)**: Free inference credits active (Tier 1: Spark, week 2/4). API key `acp-1eb86f6fe48a0af6118d` confirmed working (HTTP 201, Jul 16). Console enabled with Hermes runtime + Druckenmiller Trader template. Auto-billing authorized on chain 8453 (Base) — $210 balance confirmed ($200 free + $10 top-up). $40 burn test completed — 505 successful calls, $40.01 spent, $170 remaining.
+- **Dubstrata ($100)**: API working, $99.79 remaining. Integration built (`DubstrataIntelligenceService`) but testing stopped per instruction. Intelligence report endpoint still returning 404.
 
 ### GitHub Growth
 
@@ -57,7 +57,8 @@ Complete Kuberna Labs deployment across target chains, submit to BNB hackathons,
 - Polygon Amoy: RPC issues, no ETH
 - Arbitrum Sepolia: no ETH
 - Supabase project paused — needs manual unpause
-- **Virtuals compute**: Key authenticates but "Insufficient credits" — needs auto-billing to be authorized in Virtuals Console (set preferred chain to 8453/Base)
+- ~~**Virtuals compute**: Key authenticates but "Insufficient credits" — needs free inference credits claimed via GitHub linking on Credits page (auto-billing now authorized on 8453/Base, $210 balance)~~ **RESOLVED** — API confirmed working Jul 16, $40 burn test completed
+- **Virtuals API bug**: High concurrency (>15 for Opus 4.8, >30 for Fast) causes timeouts. Fixed in `scripts/burn-fixed.mjs` with 300s timeout, 10/30 concurrency, retry logic.
 - Tollbeam staging key returning `unauthorized`
 - Dubstrata $100 provisioned but some endpoints returning 404 (`/intelligence-report`)
 
@@ -127,10 +128,9 @@ curl -s https://compute.virtuals.io/v1/chat/completions \
 
 ## Next Steps
 
-1. **Authorize Virtuals auto-billing** in console (preferred chain: 8453 Base) to unlock $200/wk compute
-2. Publish ERC-8004 adapter as npm release
-3. Monitor v0.2 freeze from @flyoung588
-4. Resume Sepolia/Polygon/Arb deployments when faucets recover
-5. SVP Chain FutureStack submission before Jul 30 ($250K AI Agent track)
-6. Grant applications: Solana Superteam, Microsoft Founders Hub, Google Cloud
-7. BRD Hanga Venture Ignite+ — $110K Rwanda grant
+1. Publish ERC-8004 adapter as npm release
+2. Monitor v0.2 freeze from @flyoung588
+3. Resume Sepolia/Polygon/Arb deployments when faucets recover
+4. SVP Chain FutureStack submission before Jul 30 ($250K AI Agent track)
+5. Grant applications: Solana Superteam, Microsoft Founders Hub, Google Cloud
+6. BRD Hanga Venture Ignite+ — $110K Rwanda grant
