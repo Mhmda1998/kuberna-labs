@@ -3,7 +3,7 @@
   "receipt_type": "chain_derivable",
   "scope_version": "delegation-scope-v1",
 
-  "fact_id": "0x2369ba13f2ab8beba8dcd01fcd1b8c8e49076bc7019fda4eb80e1bf1b22a7c0e",
+  "fact_id": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad",
 
   "subject": {
     "erc8004_token_id": "10042",
@@ -57,6 +57,6 @@
       "principal", "body", "constraints", "success_criteria",
       "nonce", "issued_at", "expires_at"
     ],
-    "bytes32": "0x2369ba13f2ab8beba8dcd01fcd1b8c8e49076bc7019fda4eb80e1bf1b22a7c0e"
+    "bytes32": "0x82c33017978a70f0cf08ecc45df9ae81107410d466f0e5205b426981466baaad"
   }
 }
