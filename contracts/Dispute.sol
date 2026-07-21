@@ -49,6 +49,7 @@ struct VoteRecord {
 }
 
 contract KubernaDispute is Ownable, ReentrancyGuard {
+    // counts how many disputes have been opened
     uint256 public disputeCount;
     uint256 public immutable VOTING_PERIOD = 7 days;
     uint256 public immutable APPEAL_PERIOD = 3 days;
@@ -62,26 +63,28 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
     mapping(address => Juror) public jurors;
     address[] public jurorList;
 
+    // Track if an escrow already has an active dispute to prevent duplicates
+    mapping(bytes32 => bool) public escrowHasActiveDispute;
+
     event RewardClaimed(address indexed juror, uint256 amount);
 
-    event DisputeOpened(bytes32, bytes32, address, address);
-    event VoteCast(bytes32, address, Vote);
-    event DisputeResolved(bytes32, Vote);
-    event DisputeAppealed(bytes32);
-    event JurorRegistered(address);
+    event DisputeOpened(bytes32 disputeId, bytes32 escrowId, address requester, address executor);
+    event VoteCast(bytes32 disputeId, address voter, Vote vote);
+    event DisputeResolved(bytes32 disputeId, Vote result);
+    event DisputeAppealed(bytes32 disputeId);
+    event JurorRegistered(address juror);
     event JurorUnregistered(address juror, uint256 amount);
 
-    constructor() Ownable(msg.sender) {}
+    constructor() {
+        // Ownable sets owner to msg.sender in its constructor; no manual args needed
+    }
 
     function registerJuror(address juror) external payable {
-        require(msg.value >= MIN_JUROR_STAKE);
-        require(!jurors[juror].active);
+        require(msg.value >= MIN_JUROR_STAKE, "Insufficient stake");
+        require(!jurors[juror].active, "Already an active juror");
 
         jurors[juror] = Juror(juror, msg.value, true);
         jurorList.push(juror);
-        unchecked {
-            disputeCount++;
-        }
 
         emit JurorRegistered(juror);
     }
@@ -95,7 +98,9 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         j.active = false;
         j.stakedAmount = 0;
 
-        payable(msg.sender).transfer(amount);
+        (bool sent, ) = payable(msg.sender).call{value: amount}("");
+        require(sent, "Transfer failed");
+
         emit JurorUnregistered(msg.sender, amount);
     }
 
@@ -105,9 +110,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         address executor,
         string calldata reason
     ) external onlyOwner returns (bytes32) {
-        require(disputes[escrowId].createdAt == 0);
+        // Prevent multiple active disputes for the same escrow
+        require(!escrowHasActiveDispute[escrowId], "Active dispute exists for escrow");
 
-        bytes32 disputeId = keccak256(abi.encodePacked(escrowId, block.timestamp));
+        bytes32 disputeId = keccak256(abi.encodePacked(escrowId, block.timestamp, msg.sender));
 
         disputes[disputeId] = DisputeData({
             escrowId: escrowId,
@@ -125,44 +131,43 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
             appealed: false
         });
 
+        escrowHasActiveDispute[escrowId] = true;
+        unchecked { disputeCount++; }
+
         emit DisputeOpened(disputeId, escrowId, requester, executor);
         return disputeId;
     }
 
     function submitEvidence(bytes32 disputeId, string calldata evidence, bool isRequester) external {
         DisputeData storage d = disputes[disputeId];
-        require(d.createdAt != 0);
-        require(d.status == DisputeStatus.Voting);
-        require(bytes(evidence).length <= 1000);
+        require(d.createdAt != 0, "Dispute not found");
+        require(d.status == DisputeStatus.Voting, "Not in voting state");
+        require(bytes(evidence).length <= 1000, "Evidence too long");
 
         if (isRequester) {
-            require(msg.sender == d.requester);
+            require(msg.sender == d.requester, "Only requester can submit requester evidence");
             d.requesterEvidence = evidence;
         } else {
-            require(msg.sender == d.executor);
+            require(msg.sender == d.executor, "Only executor can submit executor evidence");
             d.executorEvidence = evidence;
         }
     }
 
     function vote(bytes32 disputeId, Vote support) external {
         DisputeData storage d = disputes[disputeId];
-        require(d.createdAt != 0);
-        require(d.status == DisputeStatus.Voting);
-        require(block.timestamp < d.votingEndTime);
-        require(jurors[msg.sender].active);
-        require(!hasVoted[disputeId][msg.sender]);
+        require(d.createdAt != 0, "Dispute not found");
+        require(d.status == DisputeStatus.Voting, "Not in voting state");
+        require(block.timestamp < d.votingEndTime, "Voting period ended");
+        require(jurors[msg.sender].active, "Not a juror");
+        require(!hasVoted[disputeId][msg.sender], "Already voted");
 
         hasVoted[disputeId][msg.sender] = true;
         disputeVotes[disputeId].push(VoteRecord(msg.sender, support, block.timestamp));
 
         if (support == Vote.RequesterWins) {
-            unchecked {
-                d.requesterVotes++;
-            }
+            unchecked { d.requesterVotes++; }
         } else if (support == Vote.ExecutorWins) {
-            unchecked {
-                d.executorVotes++;
-            }
+            unchecked { d.executorVotes++; }
         }
 
         emit VoteCast(disputeId, msg.sender, support);
@@ -170,9 +175,9 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
 
     function resolveDispute(bytes32 disputeId) external nonReentrant {
         DisputeData storage d = disputes[disputeId];
-        require(d.createdAt != 0);
-        require(d.status == DisputeStatus.Voting);
-        require(block.timestamp >= d.votingEndTime);
+        require(d.createdAt != 0, "Dispute not found");
+        require(d.status == DisputeStatus.Voting, "Not in voting state");
+        require(block.timestamp >= d.votingEndTime, "Voting not ended");
 
         if (d.requesterVotes > d.executorVotes) d.result = Vote.RequesterWins;
         else if (d.executorVotes > d.requesterVotes) d.result = Vote.ExecutorWins;
@@ -181,16 +186,19 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         d.status = DisputeStatus.Resolved;
         _rewardJurors(disputeId);
 
+        // mark escrow as no longer having an active dispute
+        escrowHasActiveDispute[d.escrowId] = false;
+
         emit DisputeResolved(disputeId, d.result);
     }
 
     function appealDispute(bytes32 disputeId) external payable {
         DisputeData storage d = disputes[disputeId];
-        require(d.createdAt != 0);
-        require(d.status == DisputeStatus.Resolved);
-        require(!d.appealed);
-        require(msg.sender == d.requester || msg.sender == d.executor);
-        require(msg.value >= 1 ether);
+        require(d.createdAt != 0, "Dispute not found");
+        require(d.status == DisputeStatus.Resolved, "Not resolved");
+        require(!d.appealed, "Already appealed");
+        require(msg.sender == d.requester || msg.sender == d.executor, "Only parties can appeal");
+        require(msg.value >= 1 ether, "Insufficient appeal fee");
 
         d.appealed = true;
         d.status = DisputeStatus.Appealed;
@@ -213,7 +221,10 @@ contract KubernaDispute is Ownable, ReentrancyGuard {
         uint256 reward = pendingRewards[disputeId][msg.sender];
         require(reward > 0, "No pending reward");
         pendingRewards[disputeId][msg.sender] = 0;
-        payable(msg.sender).transfer(reward);
+
+        (bool sent, ) = payable(msg.sender).call{value: reward}("");
+        require(sent, "Transfer failed");
+
         emit RewardClaimed(msg.sender, reward);
     }
 
